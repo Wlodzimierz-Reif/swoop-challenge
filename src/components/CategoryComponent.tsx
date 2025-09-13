@@ -1,7 +1,13 @@
-import type { Category } from '../types';
-import { Box, Card, Flex, Strong, Text } from '@radix-ui/themes';
+import type { Category } from '../types.ts';
+import { Box, Button, Card, Flex, Strong, Text } from '@radix-ui/themes';
 
-const CategoryComponent = ({ category }: { category: Category }) => {
+const CategoryComponent = ({
+  category,
+  handleDeleteCategory,
+}: {
+  category: Category;
+  handleDeleteCategory: (id: string) => void;
+}) => {
   return (
     <Card
       my="2"
@@ -10,7 +16,7 @@ const CategoryComponent = ({ category }: { category: Category }) => {
         backgroundColor: category.color,
       }}
     >
-      <Flex gap="3" align="center">
+      <Flex gap="3" align="center" justify="between">
         <Box>
           <Text
             as="span"
@@ -22,6 +28,9 @@ const CategoryComponent = ({ category }: { category: Category }) => {
             <Strong>{category.name}</Strong>
           </Text>
         </Box>
+        <Button color="red" onClick={() => handleDeleteCategory(category.id)} style={{ cursor: 'pointer' }}>
+          Delete
+        </Button>
       </Flex>
     </Card>
   );

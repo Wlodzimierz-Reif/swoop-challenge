@@ -1,5 +1,6 @@
-import { Todo } from '../types';
-import { generatePastelColor } from './pastelColor';
+import { Todo } from '../types.ts';
+import { Category } from '../types.ts';
+import { generatePastelColor } from './pastelColor.ts';
 
 export const addTodo = async ({ todoText }: { todoText: string }) => {
   const response = await fetch('http://localhost:3001/todos', {
@@ -65,6 +66,22 @@ export const addCategory = async ({ categoryText }: { categoryText: string }) =>
   });
   const category = await response.json();
   return category;
+};
+
+export const deleteCategory = async ({ id, categories }: { id: string; categories: Category[] }) => {
+  const category = categories.find((category: Category) => category.id === id);
+
+  if (category) {
+    try {
+      await fetch(`http://localhost:3001/categories/${id}`, {
+        method: 'DELETE',
+      });
+      const updatedCategories = categories.filter((category: Category) => category.id !== id);
+      return updatedCategories;
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    }
+  }
 };
 
 export const onTodoCategoryChange = async ({
