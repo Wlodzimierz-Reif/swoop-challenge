@@ -23,6 +23,7 @@ const CardComponent = ({
       style={{
         backgroundColor: categories.find((category: Category) => category.id === todo.categoryId)?.color,
       }}
+      data-testid="todo-item"
     >
       <Flex justify="between">
         <Flex gap="3" align="center">
@@ -62,7 +63,7 @@ const CardComponent = ({
             </Select.Content>
           </Select.Root>
         </Flex>
-        <Button color="red" onClick={() => deleteTodo({ id: todo.id, todos })} style={{ cursor: 'pointer' }}>
+        <Button data-testid="delete-todo-button" color="red" onClick={() => deleteTodo({ id: todo.id, todos })} style={{ cursor: 'pointer' }}>
           Delete
         </Button>
       </Flex>

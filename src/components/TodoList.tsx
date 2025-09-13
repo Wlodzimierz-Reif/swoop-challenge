@@ -1,6 +1,6 @@
 import { Box, TextField } from '@radix-ui/themes';
 import { Category, Todo } from '../types';
-import CardComponent from './CardComponent';
+import CardComponent from './CardComponent.tsx';
 import { deleteTodo, onTodoCategoryChange, toggleTodo } from '../utils/fetch';
 import { TodoCatContext } from '../utils/context';
 import { useContext } from 'react';
@@ -44,7 +44,7 @@ const TodoList = ({
 
   return (
     <Box width="auto">
-      <h2>Todo List</h2>
+      <h2 data-testid="todo-list-title">Todo List</h2>
       <TextField.Root>
         <TextField.Input
           placeholder="Type your todo here"
@@ -52,22 +52,25 @@ const TodoList = ({
           size="3"
           onChange={(e) => setTodoText(e.target.value)}
           onKeyDown={onCreateTodoKeyDown}
+          data-testid="new-todo-input"
         />
       </TextField.Root>
 
-      {todos.map((todo: Todo) => {
-        return (
-          <CardComponent
-            todos={todos}
-            key={todo.id}
-            todo={todo}
-            categories={categories}
-            toggleTodo={handleToggleTodo}
-            deleteTodo={handleDeleteTodo}
-            onTodoCategoryChange={handleTodoCategoryChange}
-          />
-        );
-      })}
+      <Box data-testid="todo-list">
+        {todos.map((todo: Todo) => {
+          return (
+            <CardComponent
+              todos={todos}
+              key={todo.id}
+              todo={todo}
+              categories={categories}
+              toggleTodo={handleToggleTodo}
+              deleteTodo={handleDeleteTodo}
+              onTodoCategoryChange={handleTodoCategoryChange}
+            />
+          );
+        })}
+      </Box>
     </Box>
   );
 };

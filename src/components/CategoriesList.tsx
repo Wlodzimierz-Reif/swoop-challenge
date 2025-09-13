@@ -19,7 +19,7 @@ const CategoriesList = ({
   const { setCategories } = useContext(TodoCatContext) as {
     setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
   };
-  const handleDeleteCategory = async (id: string ) => {
+  const handleDeleteCategory = async (id: string) => {
     const updatedCategories = await deleteCategory({ id, categories });
     setCategories(updatedCategories as Category[]);
   };
@@ -36,9 +36,13 @@ const CategoriesList = ({
           data-testid="new-category-input"
         />
       </TextField.Root>
-      {categories?.map((category: Category) => {
-        return <CategoryComponent key={category.id} category={category} handleDeleteCategory={handleDeleteCategory} />;
-      })}
+      <Box data-testid="categories-list">
+        {categories?.map((category: Category) => {
+          return (
+            <CategoryComponent key={category.id} category={category} handleDeleteCategory={handleDeleteCategory} />
+          );
+        })}
+      </Box>
     </Box>
   );
 };

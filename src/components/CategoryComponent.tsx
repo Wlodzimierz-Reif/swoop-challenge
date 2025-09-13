@@ -15,6 +15,7 @@ const CategoryComponent = ({
       style={{
         backgroundColor: category.color,
       }}
+      data-testid="category-item"
     >
       <Flex gap="3" align="center" justify="between">
         <Box>
