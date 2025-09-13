@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 
+import type { Category, Todo } from './types';
+
 import { generatePastelColor } from './utils/pastelColor';
-import { Box, Button, Card, Checkbox, Flex, Grid, Select, Strong, Text, TextField } from '@radix-ui/themes';
+import { Grid } from '@radix-ui/themes';
+
+import CategoriesList from './components/CategoriesList';
+import TodoList from './components/TodoList';
 
 function App() {
-  const [todos, setTodos] = useState<any>([]);
-  const [categories, setCategories] = useState<any>([]);
-  const [todoText, setTodoText] = useState<any>('');
-  const [categoryText, setCategoryText] = useState<any>('');
+  const [todos, setTodos] = useState<Todo[] | []>([]);
+  const [categories, setCategories] = useState<Category[] | []>([]);
+  const [todoText, setTodoText] = useState<string>('');
+  const [categoryText, setCategoryText] = useState<string>('');
 
   const addTodo = async () => {
     const response = await fetch('http://localhost:3001/todos', {
@@ -21,8 +26,8 @@ function App() {
     setTodos([...todos, todo]);
   };
 
-  const toggleTodo = async (id: any) => {
-    const todo = todos.find((todo: any) => todo.id === id);
+  const toggleTodo = async (id: string) => {
+    const todo = todos.find((todo: Todo) => todo.id === id);
 
     if (todo) {
       const response = await fetch(`http://localhost:3001/todos/${id}`, {
@@ -33,7 +38,7 @@ function App() {
         body: JSON.stringify({ ...todo, done: !todo.done }),
       });
       const updatedTodo = await response.json();
-      const updatedTodos = todos.map((todo: any) => {
+      const updatedTodos = todos.map((todo: Todo) => {
         if (todo.id === updatedTodo.id) {
           return updatedTodo;
         }
@@ -44,14 +49,14 @@ function App() {
   };
 
   const deleteTodo = async (id: string) => {
-    const todo = todos.find((todo: any) => todo.id === id);
+    const todo = todos.find((todo: Todo) => todo.id === id);
 
     if (todo) {
       try {
         await fetch(`http://localhost:3001/todos/${id}`, {
           method: 'DELETE',
         });
-        const updatedTodos = todos.filter((todo: any) => todo.id !== id);
+        const updatedTodos = todos.filter((todo: Todo) => todo.id !== id);
         setTodos(updatedTodos);
       } catch (error) {
         console.error('Error deleting todo:', error);
@@ -75,20 +80,20 @@ function App() {
     setCategories([...categories, category]);
   };
 
-  const onCreateTodoKeyDown = (e: any) => {
+  const onCreateTodoKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       addTodo();
     }
   };
 
-  const onCreateNewCategoryKeyDown = (e: any) => {
+  const onCreateNewCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       addCategory();
     }
   };
 
-  const onTodoCategoryChange = async (value: any, todoId: any) => {
-    const todo = todos.find((todo: any) => todo.id == todoId);
+  const onTodoCategoryChange = async (value: string, todoId: string) => {
+    const todo = todos.find((todo: Todo) => todo.id === todoId);
 
     if (todo) {
       const response = await fetch(`http://localhost:3001/todos/${todoId}`, {
@@ -99,7 +104,7 @@ function App() {
         body: JSON.stringify({ ...todo, categoryId: value }),
       });
       const updatedTodo = await response.json();
-      const updatedTodos = todos.map((todo: any) => {
+      const updatedTodos = todos.map((todo: Todo) => {
         if (todo.id === updatedTodo.id) {
           return updatedTodo;
         }
@@ -110,13 +115,24 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('http://localhost:3001/todos');
-      const data = await response.json();
-
-      setTodos(data);
+    const fetchData = async (slug: string) => {
+      try {
+        const response = await fetch(`http://localhost:3001/${slug}`);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error(`Error fetching ${slug}:`, error);
+        return [];
+      }
     };
-    fetchData();
+    const loadData = async () => {
+      const todos = await fetchData('todos');
+      const categories = await fetchData('categories');
+
+      setCategories(categories);
+      setTodos(todos);
+    };
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -131,110 +147,22 @@ function App() {
 
   return (
     <Grid columns="2" gap="3" width="auto">
-      <Box width="auto">
-        <h2>Categories</h2>
-        <TextField.Root>
-          <TextField.Input
-            placeholder="Create a new category"
-            value={categoryText}
-            size="3"
-            onChange={(e) => setCategoryText(e.target.value)}
-            onKeyDown={onCreateNewCategoryKeyDown}
-          />
-        </TextField.Root>
-        {categories?.map((category: any) => {
-          return (
-            <Card
-              my="2"
-              key={category.id}
-              style={{
-                backgroundColor: category.color,
-              }}
-            >
-              <Flex gap="3" align="center">
-                <Box>
-                  <Text
-                    as="span"
-                    size="3"
-                    style={{
-                      color: 'black',
-                    }}
-                  >
-                    <Strong>{category.name}</Strong>
-                  </Text>
-                </Box>
-              </Flex>
-            </Card>
-          );
-        })}
-      </Box>
-      <Box width="auto">
-        <h2>Todo List</h2>
-        <TextField.Root>
-          <TextField.Input
-            placeholder="Type your todo here"
-            value={todoText}
-            size="3"
-            onChange={(e) => setTodoText(e.target.value)}
-            onKeyDown={onCreateTodoKeyDown}
-          />
-        </TextField.Root>
-
-        {todos.map((todo: any) => {
-          return (
-            <Card
-              my="2"
-              key={todo.id}
-              style={{
-                backgroundColor: categories.find((category: any) => category.id === todo.categoryId)?.color,
-              }}
-            >
-              <Flex justify="between">
-                <Flex gap="3" align="center">
-                  <Checkbox
-                    size="3"
-                    checked={todo.done}
-                    onCheckedChange={() => {
-                      toggleTodo(todo.id);
-                    }}
-                  />
-                  <Box>
-                    <Text
-                      as="span"
-                      size="3"
-                      style={{
-                        color: 'black',
-                      }}
-                    >
-                      <Strong> {todo.text}</Strong>
-                    </Text>
-                  </Box>
-                  <Select.Root
-                    value={todo.categoryId?.toString()}
-                    onValueChange={(value) => onTodoCategoryChange(value, todo.id.toString())}
-                  >
-                    <Select.Trigger />
-                    <Select.Content>
-                      <Select.Group>
-                        {categories.map((category: any) => {
-                          return (
-                            <Select.Item key={category.id} value={category.id.toString()}>
-                              {category.name}
-                            </Select.Item>
-                          );
-                        })}
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
-                </Flex>
-                <Button color="red" onClick={() => deleteTodo(todo.id)} style={{ cursor: 'pointer' }}>
-                  Delete
-                </Button>
-              </Flex>
-            </Card>
-          );
-        })}
-      </Box>
+      <CategoriesList
+        categories={categories}
+        categoryText={categoryText}
+        setCategoryText={setCategoryText}
+        onCreateNewCategoryKeyDown={onCreateNewCategoryKeyDown}
+      />
+      <TodoList
+        todos={todos}
+        todoText={todoText}
+        setTodoText={setTodoText}
+        onCreateTodoKeyDown={onCreateTodoKeyDown}
+        categories={categories}
+        toggleTodo={toggleTodo}
+        deleteTodo={deleteTodo}
+        onTodoCategoryChange={onTodoCategoryChange}
+      />
     </Grid>
   );
 }
