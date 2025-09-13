@@ -2,17 +2,19 @@ import { Box, Button, Card, Checkbox, Flex, Select, Strong, Text } from '@radix-
 import { Category, Todo } from '../types';
 
 const CardComponent = ({
+  todos,
   todo,
   categories,
   toggleTodo,
   deleteTodo,
   onTodoCategoryChange,
 }: {
+  todos: Todo[];
   todo: Todo;
   categories: Category[];
-  toggleTodo: (id: string) => void;
-  deleteTodo: (id: string) => void;
-  onTodoCategoryChange: (value: string, todoId: string) => void;
+  toggleTodo: ({ id, todos }: { id: string; todos: Todo[] }) => void;
+  deleteTodo: ({ id, todos }: { id: string; todos: Todo[] }) => void;
+  onTodoCategoryChange: ({ value, todoId, todos }: { value: string; todoId: string; todos: Todo[] }) => void;
 }) => {
   return (
     <Card
@@ -28,7 +30,7 @@ const CardComponent = ({
             size="3"
             checked={todo.done}
             onCheckedChange={() => {
-              toggleTodo(todo.id);
+              toggleTodo({ id: todo.id, todos });
             }}
           />
           <Box>
@@ -44,7 +46,7 @@ const CardComponent = ({
           </Box>
           <Select.Root
             value={todo.categoryId?.toString()}
-            onValueChange={(value) => onTodoCategoryChange(value, todo.id.toString())}
+            onValueChange={(value) => onTodoCategoryChange({ value, todoId: todo.id.toString(), todos })}
           >
             <Select.Trigger />
             <Select.Content>
@@ -60,7 +62,7 @@ const CardComponent = ({
             </Select.Content>
           </Select.Root>
         </Flex>
-        <Button color="red" onClick={() => deleteTodo(todo.id)} style={{ cursor: 'pointer' }}>
+        <Button color="red" onClick={() => deleteTodo({ id: todo.id, todos })} style={{ cursor: 'pointer' }}>
           Delete
         </Button>
       </Flex>

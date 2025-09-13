@@ -1,116 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import type { Category, Todo } from './types';
-
-import { generatePastelColor } from './utils/pastelColor';
 import { Grid } from '@radix-ui/themes';
 
 import CategoriesList from './components/CategoriesList';
 import TodoList from './components/TodoList';
+import { addCategory, addTodo } from './utils/fetch';
+import type { Category, Todo } from './types'; // Uncomment if you have these types
+import { TodoCatContext } from './utils/context';
 
 function App() {
-  const [todos, setTodos] = useState<Todo[] | []>([]);
-  const [categories, setCategories] = useState<Category[] | []>([]);
-  const [todoText, setTodoText] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
+  const [todoText, setTodoText] = useState<string>('');
 
-  const addTodo = async () => {
-    const response = await fetch('http://localhost:3001/todos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: Date.now().toString(), text: todoText, done: false }),
-    });
-    const todo = await response.json();
-    setTodos([...todos, todo]);
+  const { todos, setTodos, categories, setCategories } = useContext(TodoCatContext) as {
+    todos: Todo[];
+    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    categories: Category[];
+    setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
   };
 
-  const toggleTodo = async (id: string) => {
-    const todo = todos.find((todo: Todo) => todo.id === id);
-
-    if (todo) {
-      const response = await fetch(`http://localhost:3001/todos/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...todo, done: !todo.done }),
-      });
-      const updatedTodo = await response.json();
-      const updatedTodos = todos.map((todo: Todo) => {
-        if (todo.id === updatedTodo.id) {
-          return updatedTodo;
-        }
-        return todo;
-      });
-      setTodos(updatedTodos);
-    }
-  };
-
-  const deleteTodo = async (id: string) => {
-    const todo = todos.find((todo: Todo) => todo.id === id);
-
-    if (todo) {
-      try {
-        await fetch(`http://localhost:3001/todos/${id}`, {
-          method: 'DELETE',
-        });
-        const updatedTodos = todos.filter((todo: Todo) => todo.id !== id);
-        setTodos(updatedTodos);
-      } catch (error) {
-        console.error('Error deleting todo:', error);
-      }
-    }
-  };
-
-  const addCategory = async () => {
-    const response = await fetch('http://localhost:3001/categories', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: Date.now().toString(),
-        name: categoryText,
-        color: generatePastelColor(),
-      }),
-    });
-    const category = await response.json();
-    setCategories([...categories, category]);
-  };
-
-  const onCreateTodoKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onCreateTodoKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      addTodo();
+      const newTodo = await addTodo({ todoText });
+      setTodos([...todos, newTodo]);
     }
   };
 
-  const onCreateNewCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onCreateNewCategoryKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      addCategory();
-    }
-  };
-
-  const onTodoCategoryChange = async (value: string, todoId: string) => {
-    const todo = todos.find((todo: Todo) => todo.id === todoId);
-
-    if (todo) {
-      const response = await fetch(`http://localhost:3001/todos/${todoId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...todo, categoryId: value }),
-      });
-      const updatedTodo = await response.json();
-      const updatedTodos = todos.map((todo: Todo) => {
-        if (todo.id === updatedTodo.id) {
-          return updatedTodo;
-        }
-        return todo;
-      });
-      setTodos(updatedTodos);
+      const newCategory = await addCategory({ categoryText });
+      setCategories([...categories, newCategory]);
     }
   };
 
@@ -159,9 +78,6 @@ function App() {
         setTodoText={setTodoText}
         onCreateTodoKeyDown={onCreateTodoKeyDown}
         categories={categories}
-        toggleTodo={toggleTodo}
-        deleteTodo={deleteTodo}
-        onTodoCategoryChange={onTodoCategoryChange}
       />
     </Grid>
   );
