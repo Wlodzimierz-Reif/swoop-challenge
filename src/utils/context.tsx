@@ -1,5 +1,6 @@
 import { useState, createContext } from 'react';
-import { Category, Todo } from '../types';
+
+import type { Category, Todo } from 'types.ts';
 
 import { Dispatch, SetStateAction } from 'react';
 

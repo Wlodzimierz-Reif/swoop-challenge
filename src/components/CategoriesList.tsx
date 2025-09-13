@@ -1,9 +1,11 @@
-import { Box, TextField } from '@radix-ui/themes';
-import { Category } from '../types.ts';
-import CategoryComponent from './CategoryComponent.tsx';
-import { deleteCategory } from '../utils/fetch.ts';
 import { useContext } from 'react';
-import { TodoCatContext } from '../utils/context.tsx';
+
+import type { Category } from 'types.ts';
+
+import { Box, TextField } from '@radix-ui/themes';
+import { TodoCatContext } from '@utils/context.tsx';
+import { deleteCategory } from '@utils/fetch.ts';
+import CategoryComponent from '@components/CategoryComponent.tsx';
 
 const CategoriesList = ({
   categories,

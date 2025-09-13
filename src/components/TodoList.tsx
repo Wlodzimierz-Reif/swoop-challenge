@@ -1,9 +1,12 @@
-import { Box, TextField } from '@radix-ui/themes';
-import { Category, Todo } from '../types';
-import CardComponent from './CardComponent.tsx';
-import { deleteTodo, onTodoCategoryChange, toggleTodo } from '../utils/fetch';
-import { TodoCatContext } from '../utils/context';
 import { useContext } from 'react';
+
+import { Box, TextField } from '@radix-ui/themes';
+
+import type { Category, Todo } from 'types.ts';
+
+import CardComponent from '@components/CardComponent.tsx';
+import { TodoCatContext } from '@utils/context.tsx';
+import { deleteTodo, onTodoCategoryChange, toggleTodo } from '@utils/fetch.ts';
 
 const TodoList = ({
   todos,

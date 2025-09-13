@@ -1,5 +1,5 @@
 import { Box, Button, Card, Checkbox, Flex, Select, Strong, Text } from '@radix-ui/themes';
-import { Category, Todo } from '../types';
+import type { Category, Todo } from 'types.ts';
 
 const CardComponent = ({
   todos,

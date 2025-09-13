@@ -1,5 +1,5 @@
-import type { Category } from '../types.ts';
 import { Box, Button, Card, Flex, Strong, Text } from '@radix-ui/themes';
+import { Category } from 'types.ts';
 
 const CategoryComponent = ({
   category,

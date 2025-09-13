@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 
 import { Grid } from '@radix-ui/themes';
 
-import CategoriesList from './components/CategoriesList.tsx';
-import TodoList from './components/TodoList.tsx';
-import { addCategory, addTodo } from './utils/fetch.ts';
-import type { Category, Todo } from './types.ts'; // Uncomment if you have these types
-import { TodoCatContext } from './utils/context.tsx';
+import type { Category, Todo } from 'types.ts';
+
+import CategoriesList from '@components/CategoriesList.tsx';
+import { TodoCatContext } from '@utils/context.tsx';
+import { addCategory, addTodo } from '@utils/fetch.ts';
+import TodoList from '@components/TodoList.tsx';
 
 function App() {
   const [categoryText, setCategoryText] = useState<string>('');

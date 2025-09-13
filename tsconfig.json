@@ -18,7 +18,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["components/*"], // enables us to use @components/MyComponent
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["src", "cypress"],
   "references": [{ "path": "./tsconfig.node.json" }]

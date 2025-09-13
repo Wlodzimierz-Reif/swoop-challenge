@@ -1,6 +1,5 @@
-import { Todo } from '../types.ts';
-import { Category } from '../types.ts';
-import { generatePastelColor } from './pastelColor.ts';
+import type { Category, Todo } from "types.ts";
+import { generatePastelColor } from "./pastelColor.ts";
 
 export const addTodo = async ({ todoText }: { todoText: string }) => {
   const response = await fetch('http://localhost:3001/todos', {
