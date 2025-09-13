@@ -1,0 +1,39 @@
+{
+  "todos": [
+    {
+      "id": "1757702783068",
+      "text": "test 1",
+      "done": true,
+      "categoryId": "1757702789566"
+    },
+    {
+      "id": "1757702798946",
+      "text": "task 1",
+      "done": true,
+      "categoryId": "1757702793499"
+    },
+    {
+      "id": "1757702800858",
+      "text": "task 2",
+      "done": true,
+      "categoryId": "1757702792023"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1757702789566",
+      "name": "cat 1",
+      "color": "#f6bdcd"
+    },
+    {
+      "id": "1757702792023",
+      "name": "cat 2",
+      "color": "#98e5d9"
+    },
+    {
+      "id": "1757702793499",
+      "name": "cat 3",
+      "color": "#f4a3a8"
+    }
+  ]
+}
