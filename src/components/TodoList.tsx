@@ -14,13 +14,7 @@ const TodoList = ({
   todos: Todo[];
   todoText: string;
   setTodoText: (text: string) => void;
-  onCreateKeyDown: ({
-    e,
-    type,
-  }: {
-    e: React.KeyboardEvent<HTMLInputElement>;
-    type: string;
-  }) => void;
+  onCreateKeyDown: ({ type }: { type: string }) => void;
 }) => {
   return (
     <Box width="auto">
@@ -33,13 +27,12 @@ const TodoList = ({
           onChange={(e) => setTodoText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              onCreateKeyDown({ e, type: inputType.TODO });
+              onCreateKeyDown({ type: inputType.TODO });
             }
           }}
           data-testid="new-todo-input"
         />
       </TextField.Root>
-
       <Box data-testid="todo-list">
         {todos.map((todo: Todo) => {
           return <CardComponent key={todo.id} todo={todo} />;

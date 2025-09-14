@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { Grid } from '@radix-ui/themes';
+import sanitizeHtml from 'sanitize-html';
 
 import type { Category, Todo } from 'types.ts';
 
@@ -8,6 +9,7 @@ import CategoriesList from '@components/CategoriesList.tsx';
 import { TodoCatContext } from '@utils/context.tsx';
 import { addCategory, addTodo } from '@utils/fetch.ts';
 import TodoList from '@components/TodoList.tsx';
+import { inputType } from '@utils/statics.ts';
 
 function App() {
   const [categoryText, setCategoryText] = useState<string>('');
@@ -18,18 +20,31 @@ function App() {
     setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
     categories: Category[];
     setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
+    showDialog: boolean;
+    setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
   };
 
-  const onCreateTodoKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const newTodo = await addTodo({ todoText });
-      setTodos([...todos, newTodo]);
+  const validateInput = (input: string) => {
+    if (!input || input.trim() === '' || input.length > 100) {
+      return false;
     }
+    return input.trim();
   };
 
-  const onCreateNewCategoryKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const newCategory = await addCategory({ categoryText });
+  const onCreateKeyDown = async ({ type }: { type: string }) => {
+    if (type !== inputType.TODO && type !== inputType.CATEGORY) return;
+
+    const sanitisedInput = sanitizeHtml(type === inputType.TODO ? todoText : categoryText);
+    const validatedInput = validateInput(sanitisedInput);
+    if (!validatedInput) {
+      console.log('Invalid input');
+      return;
+    }
+    if (type === inputType.TODO) {
+      const newTodo = await addTodo({ todoText: sanitisedInput });
+      setTodos([...todos, newTodo]);
+    } else if (type === inputType.CATEGORY) {
+      const newCategory = await addCategory({ categoryText: sanitisedInput });
       setCategories([...categories, newCategory]);
     }
   };
@@ -53,17 +68,7 @@ function App() {
       setTodos(todos);
     };
     loadData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('http://localhost:3001/categories');
-      const data = await response.json();
-
-      setCategories(data);
-    };
-    fetchData();
-  }, []);
+  }, [categories, todos, setCategories, setTodos]);
 
   return (
     <Grid columns="2" gap="3" width="auto">
@@ -71,14 +76,13 @@ function App() {
         categories={categories}
         categoryText={categoryText}
         setCategoryText={setCategoryText}
-        onCreateNewCategoryKeyDown={onCreateNewCategoryKeyDown}
+        onCreateKeyDown={onCreateKeyDown}
       />
       <TodoList
         todos={todos}
         todoText={todoText}
         setTodoText={setTodoText}
-        onCreateTodoKeyDown={onCreateTodoKeyDown}
-        categories={categories}
+        onCreateKeyDown={onCreateKeyDown}
       />
     </Grid>
   );

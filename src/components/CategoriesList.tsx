@@ -14,13 +14,7 @@ const CategoriesList = ({
   categories: Category[];
   categoryText: string;
   setCategoryText: (text: string) => void;
-  onCreateKeyDown: ({
-    e,
-    type,
-  }: {
-    e: React.KeyboardEvent<HTMLInputElement>;
-    type: string;
-  }) => void;
+  onCreateKeyDown: ({ type }: { type: string }) => void;
 }) => {
   return (
     <Box width="auto">
@@ -33,7 +27,7 @@ const CategoriesList = ({
           onChange={(e) => setCategoryText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              onCreateKeyDown({ e, type: inputType.CATEGORY });
+              onCreateKeyDown({ type: inputType.CATEGORY });
             }
           }}
           data-testid="new-category-input"
