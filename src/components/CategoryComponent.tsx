@@ -1,13 +1,20 @@
-import { Box, Button, Card, Flex, Strong, Text } from '@radix-ui/themes';
+import { Box, Card, Flex, Strong, Text } from '@radix-ui/themes';
 import { Category } from 'types.ts';
+import Modal from './Modal.tsx';
+import { useContext } from 'react';
+import { TodoCatContext } from '@utils/context.tsx';
+import { deleteCategory } from '@utils/fetch.ts';
 
-const CategoryComponent = ({
-  category,
-  handleDeleteCategory,
-}: {
-  category: Category;
-  handleDeleteCategory: (id: string) => void;
-}) => {
+const CategoryComponent = ({ category }: { category: Category }) => {
+  const { categories, setCategories, setShowDialog } = useContext(TodoCatContext) as {
+    setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
+    setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+    categories: Category[];
+  };
+  const handleDeleteCategory = async ({ id }: { id: string }) => {
+    const updatedCategories = await deleteCategory({ id, categories });
+    setCategories(updatedCategories as Category[]);
+  };
   return (
     <Card
       my="2"
@@ -29,9 +36,13 @@ const CategoryComponent = ({
             <Strong>{category.name}</Strong>
           </Text>
         </Box>
-        <Button color="red" onClick={() => handleDeleteCategory(category.id)} style={{ cursor: 'pointer' }}>
-          Delete
-        </Button>
+        <Modal
+          title="Delete Category"
+          buttonText="Delete"
+          description="Are you sure you want to delete this category?"
+          onConfirm={() => handleDeleteCategory({ id: category.id })}
+          onCancel={() => setShowDialog(false)}
+        />
       </Flex>
     </Card>
   );

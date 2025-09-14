@@ -1,31 +1,27 @@
-import { useContext } from 'react';
+import { Box, TextField } from '@radix-ui/themes';
 
 import type { Category } from 'types.ts';
 
-import { Box, TextField } from '@radix-ui/themes';
-import { TodoCatContext } from '@utils/context.tsx';
-import { deleteCategory } from '@utils/fetch.ts';
 import CategoryComponent from '@components/CategoryComponent.tsx';
+import { inputType } from '@utils/statics.ts';
 
 const CategoriesList = ({
   categories,
   categoryText,
   setCategoryText,
-  onCreateNewCategoryKeyDown,
+  onCreateKeyDown,
 }: {
   categories: Category[];
   categoryText: string;
   setCategoryText: (text: string) => void;
-  onCreateNewCategoryKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onCreateKeyDown: ({
+    e,
+    type,
+  }: {
+    e: React.KeyboardEvent<HTMLInputElement>;
+    type: string;
+  }) => void;
 }) => {
-  const { setCategories } = useContext(TodoCatContext) as {
-    setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
-  };
-  const handleDeleteCategory = async (id: string) => {
-    const updatedCategories = await deleteCategory({ id, categories });
-    setCategories(updatedCategories as Category[]);
-  };
-
   return (
     <Box width="auto">
       <h2 data-testid="categories-list-title">Categories</h2>
@@ -35,15 +31,17 @@ const CategoriesList = ({
           value={categoryText}
           size="3"
           onChange={(e) => setCategoryText(e.target.value)}
-          onKeyDown={onCreateNewCategoryKeyDown}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onCreateKeyDown({ e, type: inputType.CATEGORY });
+            }
+          }}
           data-testid="new-category-input"
         />
       </TextField.Root>
       <Box data-testid="categories-list">
         {categories?.map((category: Category) => {
-          return (
-            <CategoryComponent key={category.id} category={category} handleDeleteCategory={handleDeleteCategory} />
-          );
+          return <CategoryComponent key={category.id} category={category} />;
         })}
       </Box>
     </Box>

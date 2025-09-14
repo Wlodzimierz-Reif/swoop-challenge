@@ -1,11 +1,13 @@
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 
 const Modal = ({
+  title,
   buttonText,
   description,
   onConfirm,
   onCancel,
 }: {
+  title: string;
   buttonText: string;
   description: string;
   onConfirm: () => void;
@@ -17,7 +19,7 @@ const Modal = ({
         <Button color="red">{buttonText}</Button>
       </AlertDialog.Trigger>
       <AlertDialog.Content style={{ maxWidth: '450px' }}>
-        <AlertDialog.Title>Revoke access</AlertDialog.Title>
+        <AlertDialog.Title>{title}</AlertDialog.Title>
         <AlertDialog.Description size="2">{description}</AlertDialog.Description>
 
         <Flex gap="3" mt="4" justify="end">
