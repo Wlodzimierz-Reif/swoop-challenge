@@ -1,5 +1,14 @@
-import { Box, Button, Card, Checkbox, Flex, Select, Strong, Text } from '@radix-ui/themes';
+import {
+  Box,
+  Card,
+  Checkbox,
+  Flex,
+  Select,
+  Strong,
+  Text,
+} from '@radix-ui/themes';
 import type { Category, Todo } from 'types.ts';
+import Modal from './Modal.tsx';
 
 const CardComponent = ({
   todos,
@@ -8,20 +17,31 @@ const CardComponent = ({
   toggleTodo,
   deleteTodo,
   onTodoCategoryChange,
+  setShowDialog,
 }: {
   todos: Todo[];
   todo: Todo;
   categories: Category[];
   toggleTodo: ({ id, todos }: { id: string; todos: Todo[] }) => void;
   deleteTodo: ({ id, todos }: { id: string; todos: Todo[] }) => void;
-  onTodoCategoryChange: ({ value, todoId, todos }: { value: string; todoId: string; todos: Todo[] }) => void;
+  onTodoCategoryChange: ({
+    value,
+    todoId,
+    todos,
+  }: {
+    value: string;
+    todoId: string;
+    todos: Todo[];
+  }) => void;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <Card
       my="2"
       key={todo.id}
       style={{
-        backgroundColor: categories.find((category: Category) => category.id === todo.categoryId)?.color,
+        backgroundColor: categories.find((category: Category) => category.id === todo.categoryId)
+          ?.color,
       }}
       data-testid="todo-item"
     >
@@ -47,7 +67,9 @@ const CardComponent = ({
           </Box>
           <Select.Root
             value={todo.categoryId?.toString()}
-            onValueChange={(value) => onTodoCategoryChange({ value, todoId: todo.id.toString(), todos })}
+            onValueChange={(value) =>
+              onTodoCategoryChange({ value, todoId: todo.id.toString(), todos })
+            }
           >
             <Select.Trigger />
             <Select.Content>
@@ -63,9 +85,12 @@ const CardComponent = ({
             </Select.Content>
           </Select.Root>
         </Flex>
-        <Button data-testid="delete-todo-button" color="red" onClick={() => deleteTodo({ id: todo.id, todos })} style={{ cursor: 'pointer' }}>
-          Delete
-        </Button>
+        <Modal
+          buttonText="Delete"
+          description="Are you sure you want to delete this todo?"
+          onConfirm={() => deleteTodo({ id: todo.id, todos })}
+          onCancel={() => setShowDialog(false)}
+        />
       </Flex>
     </Card>
   );

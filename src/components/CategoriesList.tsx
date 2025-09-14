@@ -25,6 +25,7 @@ const CategoriesList = ({
     const updatedCategories = await deleteCategory({ id, categories });
     setCategories(updatedCategories as Category[]);
   };
+
   return (
     <Box width="auto">
       <h2 data-testid="categories-list-title">Categories</h2>

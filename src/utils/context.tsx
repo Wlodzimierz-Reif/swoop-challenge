@@ -9,19 +9,28 @@ const defaultState: {
   setTodos: Dispatch<SetStateAction<Todo[]>>;
   categories: Category[];
   setCategories: Dispatch<SetStateAction<Category[]>>;
+  showDialog: boolean;
+  setShowDialog: Dispatch<SetStateAction<boolean>>;
 } = {
   todos: [],
   setTodos: () => {},
   categories: [],
   setCategories: () => {},
+  showDialog: false,
+  setShowDialog: () => {},
 };
 export const TodoCatContext = createContext(defaultState);
 
 export const TodoCatProvider = ({ children }: { children: React.ReactNode }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   return (
-    <TodoCatContext.Provider value={{ todos, setTodos, categories, setCategories }}>{children}</TodoCatContext.Provider>
+    <TodoCatContext.Provider
+      value={{ todos, setTodos, categories, setCategories, showDialog, setShowDialog }}
+    >
+      {children}
+    </TodoCatContext.Provider>
   );
 };

@@ -21,8 +21,9 @@ const TodoList = ({
   onCreateTodoKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   categories: Category[];
 }) => {
-  const { setTodos } = useContext(TodoCatContext) as {
+  const { setTodos, setShowDialog } = useContext(TodoCatContext) as {
     setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
   };
   const handleToggleTodo = async ({ id, todos }: { id: string; todos: Todo[] }) => {
     const updatedTodos = await toggleTodo({ id, todos });
@@ -70,6 +71,7 @@ const TodoList = ({
               toggleTodo={handleToggleTodo}
               deleteTodo={handleDeleteTodo}
               onTodoCategoryChange={handleTodoCategoryChange}
+              setShowDialog={setShowDialog}
             />
           );
         })}
