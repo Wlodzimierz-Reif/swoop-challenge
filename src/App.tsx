@@ -7,7 +7,7 @@ import type { Category, Todo } from 'types.ts';
 
 import CategoriesList from '@components/CategoriesList.tsx';
 import { TodoCatContext } from '@utils/context.tsx';
-import { addCategory, addTodo } from '@utils/fetch.ts';
+import { addCategory, addTodo, fetchData } from '@utils/fetch.ts';
 import TodoList from '@components/TodoList.tsx';
 import { inputType } from '@utils/statics.ts';
 
@@ -50,16 +50,6 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchData = async (slug: string) => {
-      try {
-        const response = await fetch(`http://localhost:3001/${slug}`);
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error(`Error fetching ${slug}:`, error);
-        return [];
-      }
-    };
     const loadData = async () => {
       const todos = await fetchData('todos');
       const categories = await fetchData('categories');
@@ -68,7 +58,7 @@ function App() {
       setTodos(todos);
     };
     loadData();
-  }, [categories, todos, setCategories, setTodos]);
+  }, []);
 
   return (
     <Grid columns="2" gap="3" width="auto">
