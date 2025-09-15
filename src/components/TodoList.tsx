@@ -19,19 +19,18 @@ const TodoList = ({
   return (
     <Box width="auto">
       <h2 data-testid="todo-list-title">Todo List</h2>
-      <TextField.Root>
-        <TextField.Input
-          placeholder="Type your todo here"
-          value={todoText}
-          size="3"
-          onChange={(e) => setTodoText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onCreateKeyDown({ type: inputType.TODO });
-            }
-          }}
-          data-testid="new-todo-input"
-        />
+      <TextField.Root
+        placeholder="Type your todo here"
+        value={todoText}
+        size="3"
+        onChange={(e) => setTodoText((e.target as HTMLInputElement).value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onCreateKeyDown({ type: inputType.TODO });
+          }
+        }}
+      >
+        <TextField.Slot data-testid="new-todo-input" />
       </TextField.Root>
       <Box data-testid="todo-list">
         {todos.map((todo: Todo) => {

@@ -1,14 +1,16 @@
 import { FC, ReactNode, useEffect } from 'react';
-import { Theme, ThemeOptions } from '@radix-ui/themes';
+import { Theme, ThemeProps } from '@radix-ui/themes';
 
-// Define the type for the props
-interface ThemeProviderProps extends Partial<ThemeOptions> {
+interface ThemeProviderProps extends Partial<ThemeProps> {
   children: ReactNode;
 }
 
-export const ThemeProvider: FC<ThemeProviderProps> = ({ children, ...rest }) => {
+export const ThemeProvider: FC<ThemeProviderProps> = ({
+  children,
+  ...rest
+}: ThemeProviderProps) => {
   useEffect(() => {
-    switch (rest.appearance) {
+    switch ((rest as Partial<ThemeProps>).appearance) {
       case 'light': {
         if (document?.body) {
           document.body.classList.remove('light', 'dark');
@@ -24,7 +26,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children, ...rest }) => 
         break;
       }
       default: {
-        // You might want to handle the default case
+        if (document?.body) {
+          document.body.classList.remove('light', 'dark');
+          document.body.classList.add('light');
+        }
       }
     }
   }, [rest.appearance]);

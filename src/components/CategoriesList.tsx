@@ -19,19 +19,18 @@ const CategoriesList = ({
   return (
     <Box width="auto">
       <h2 data-testid="categories-list-title">Categories</h2>
-      <TextField.Root>
-        <TextField.Input
-          placeholder="Create a new category"
-          value={categoryText}
-          size="3"
-          onChange={(e) => setCategoryText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onCreateKeyDown({ type: inputType.CATEGORY });
-            }
-          }}
-          data-testid="new-category-input"
-        />
+      <TextField.Root
+        placeholder="Create a new category"
+        value={categoryText}
+        size="3"
+        onChange={(e) => setCategoryText((e.target as HTMLInputElement).value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onCreateKeyDown({ type: inputType.CATEGORY });
+          }
+        }}
+      >
+        <TextField.Slot data-testid="new-category-input" />
       </TextField.Root>
       <Box data-testid="categories-list">
         {categories?.map((category: Category) => {
