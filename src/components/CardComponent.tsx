@@ -15,11 +15,23 @@ const CardComponent = ({ todo }: { todo: Todo }) => {
 
   const handleToggleTodo = async ({ id, todos }: { id: string; todos: Todo[] }) => {
     const updatedTodos = await toggleTodo({ id, todos });
-    setTodos(updatedTodos as Todo[]);
+    setTodos(updatedTodos ?? []);
   };
   const handleDeleteTodo = async ({ id, todos }: { id: string; todos: Todo[] }) => {
     const updatedTodos = await deleteTodo({ id, todos });
-    setTodos(updatedTodos as Todo[]);
+    setTodos(updatedTodos ?? []);
+  };
+  const handleCategoryChange = async ({
+    value,
+    todoId,
+    todos,
+  }: {
+    value: string;
+    todoId: string;
+    todos: Todo[];
+  }) => {
+    const updatedTodos = await onTodoCategoryChange({ value, todoId, todos });
+    setTodos(updatedTodos ?? []);
   };
 
   return (
@@ -53,9 +65,9 @@ const CardComponent = ({ todo }: { todo: Todo }) => {
             </Text>
           </Box>
           <Select.Root
-            value={todo.categoryId?.toString()}
+            value={todo.categoryId ? todo.categoryId.toString() : ''}
             onValueChange={(value) =>
-              onTodoCategoryChange({ value, todoId: todo.id.toString(), todos })
+              handleCategoryChange({ value, todoId: todo.id.toString(), todos })
             }
           >
             <Select.Trigger />
