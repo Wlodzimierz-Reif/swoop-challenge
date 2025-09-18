@@ -30,17 +30,11 @@ describe('deleting categories', () => {
     cy.get('[data-testid=modal-dialog]').should('be.visible');
     cy.get('[data-testid=modal-cancel-button]').click();
     cy.get('[data-testid=modal-dialog]').should('not.exist');
-    cy.wait(1000);
-
     cy.get('[data-testid=delete-category-button]').last().click();
     cy.get('[data-testid=modal-dialog]').should('be.visible');
-    cy.wait(1000);
 
     cy.get('[data-testid=modal-confirm-button]').click();
-    cy.wait(1000);
-
     cy.get('[data-testid=modal-dialog]').should('not.exist');
-    cy.wait(1000);
     cy.get('[data-testid=categories-list]').should('not.contain', 'New Category');
   });
 });
@@ -59,7 +53,6 @@ describe('deleting todos', () => {
     cy.get('[data-testid=modal-dialog]').should('be.visible');
     cy.get('[data-testid=modal-confirm-button]').click();
     cy.get('[data-testid=modal-dialog]').should('not.exist');
-    cy.wait(500);
     cy.get('[data-testid=todo-list]').should('not.contain', 'New Todo');
   });
 });
