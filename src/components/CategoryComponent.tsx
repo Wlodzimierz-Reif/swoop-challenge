@@ -42,6 +42,7 @@ const CategoryComponent = ({ category }: { category: Category }) => {
           description="Are you sure you want to delete this category?"
           onConfirm={() => handleDeleteCategory({ id: category.id })}
           onCancel={() => setShowDialog(false)}
+          dataTestId="delete-category-button"
         />
       </Flex>
     </Card>

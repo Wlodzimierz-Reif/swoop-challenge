@@ -21,16 +21,45 @@ describe('adding categories and todos', () => {
   });
 });
 
-describe('deleting categories and todos', () => {
-  it('deletes a category and a todo', () => {
+describe('deleting categories', () => {
+  it('deletes a category', () => {
     cy.visit('http://localhost:5173/');
 
     // Delete the category
-    cy.get('[data-testid=category-item]').last().find('button').click();
+    cy.get('[data-testid=delete-category-button]').last().click();
+    cy.get('[data-testid=modal-dialog]').should('be.visible');
+    cy.get('[data-testid=modal-cancel-button]').click();
+    cy.get('[data-testid=modal-dialog]').should('not.exist');
+    cy.wait(1000);
+
+    cy.get('[data-testid=delete-category-button]').last().click();
+    cy.get('[data-testid=modal-dialog]').should('be.visible');
+    cy.wait(1000);
+
+    cy.get('[data-testid=modal-confirm-button]').click();
+    cy.wait(1000);
+
+    cy.get('[data-testid=modal-dialog]').should('not.exist');
+    cy.wait(1000);
     cy.get('[data-testid=categories-list]').should('not.contain', 'New Category');
+  });
+});
+
+describe('deleting todos', () => {
+  it('deletes a todo', () => {
+    cy.visit('http://localhost:5173/');
 
     // Delete the todo
-    cy.get('[data-testid=todo-item]').last().find('[data-testid=delete-todo-button]').click();
+    cy.get('[data-testid=delete-todo-button]').last().click();
+    cy.get('[data-testid=modal-dialog]').should('be.visible');
+    cy.get('[data-testid=modal-cancel-button]').click();
+    cy.get('[data-testid=modal-dialog]').should('not.exist');
+
+    cy.get('[data-testid=delete-todo-button]').last().click();
+    cy.get('[data-testid=modal-dialog]').should('be.visible');
+    cy.get('[data-testid=modal-confirm-button]').click();
+    cy.get('[data-testid=modal-dialog]').should('not.exist');
+    cy.wait(500);
     cy.get('[data-testid=todo-list]').should('not.contain', 'New Todo');
   });
 });

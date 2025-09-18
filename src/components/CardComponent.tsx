@@ -90,6 +90,7 @@ const CardComponent = ({ todo }: { todo: Todo }) => {
           description="Are you sure you want to delete this todo?"
           onConfirm={() => handleDeleteTodo({ id: todo.id, todos })}
           onCancel={() => setShowDialog(false)}
+          dataTestId="delete-todo-button"
         />
       </Flex>
     </Card>
