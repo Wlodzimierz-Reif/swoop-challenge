@@ -42,17 +42,16 @@ function App() {
     }
     if (type === inputType.TODO) {
       const newTodo = await addTodo({ todoText: sanitisedInput });
-      setTodos([...todos, newTodo]);
+      setTodos((prev) => [...prev, newTodo]);
     } else if (type === inputType.CATEGORY) {
       const newCategory = await addCategory({ categoryText: sanitisedInput });
-      setCategories([...categories, newCategory]);
+      setCategories((prev) => [...prev, newCategory]);
     }
   };
 
   useEffect(() => {
     const loadData = async () => {
-      const todos = await fetchData('todos');
-      const categories = await fetchData('categories');
+      const [todos, categories] = await Promise.all([fetchData('todos'), fetchData('categories')]);
 
       setCategories(categories);
       setTodos(todos);
